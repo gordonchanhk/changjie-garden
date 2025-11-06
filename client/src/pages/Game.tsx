@@ -4,8 +4,10 @@ import InputArea from "@/components/InputArea";
 import FallingCharacter from "@/components/FallingCharacter";
 import FeedbackAnimation from "@/components/FeedbackAnimation";
 import GameSettings from "@/components/GameSettings";
+import ScoreHistory from "@/components/ScoreHistory";
 import { Button } from "@/components/ui/button";
 import { RotateCcw } from "lucide-react";
+import { saveScore, getBestScore } from "@/lib/scoreStorage";
 import gardenBg from "@assets/generated_images/Cheerful_cartoon_garden_background_c4e43092.png";
 
 interface Character {
@@ -60,6 +62,8 @@ export default function Game() {
   const [fallSpeed, setFallSpeed] = useState('slow');
   const [timeRemaining, setTimeRemaining] = useState<number | undefined>(undefined);
   const [gameOver, setGameOver] = useState(false);
+  const [bestScore, setBestScore] = useState(getBestScore());
+  const [isNewBest, setIsNewBest] = useState(false);
 
   const handleGameModeChange = (mode: string) => {
     setGameMode(mode);
@@ -110,6 +114,15 @@ export default function Game() {
       return () => clearInterval(timer);
     }
   }, [gameMode, timeRemaining, gameOver]);
+
+  useEffect(() => {
+    if (gameOver && score > 0) {
+      saveScore(score, gameMode, fallSpeed);
+      const newBest = getBestScore();
+      setBestScore(newBest);
+      setIsNewBest(score === newBest && score > bestScore);
+    }
+  }, [gameOver, score, gameMode, fallSpeed, bestScore]);
 
   const spawnCharacter = useCallback(() => {
     if (gameOver) return;
@@ -198,6 +211,7 @@ export default function Game() {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent to-green-900/10" />
       
       <GameHeader score={score} timeRemaining={timeRemaining} onRestart={handleReset} />
+      <ScoreHistory />
       <GameSettings 
         gameMode={gameMode}
         onGameModeChange={handleGameModeChange}
@@ -231,11 +245,26 @@ export default function Game() {
       {gameOver && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex items-center justify-center">
           <div className="bg-white/95 dark:bg-card/95 rounded-lg shadow-xl p-8 max-w-md text-center space-y-4">
-            <h2 className="text-4xl font-bold text-primary">遊戲結束！</h2>
-            <h3 className="text-2xl font-semibold text-foreground">Game Over!</h3>
+            {isNewBest ? (
+              <>
+                <div className="text-6xl animate-bounce">🏆</div>
+                <h2 className="text-4xl font-bold text-primary">新紀錄！</h2>
+                <h3 className="text-2xl font-semibold text-foreground">New Best Score!</h3>
+              </>
+            ) : (
+              <>
+                <h2 className="text-4xl font-bold text-primary">遊戲結束！</h2>
+                <h3 className="text-2xl font-semibold text-foreground">Game Over!</h3>
+              </>
+            )}
             <div className="py-6">
               <p className="text-muted-foreground mb-2">最終得分 Final Score</p>
               <p className="text-6xl font-bold text-primary" data-testid="text-final-score">{score}</p>
+              {bestScore > 0 && !isNewBest && (
+                <p className="text-sm text-muted-foreground mt-4">
+                  最高分 Best: {bestScore}
+                </p>
+              )}
             </div>
             <Button 
               size="lg" 
