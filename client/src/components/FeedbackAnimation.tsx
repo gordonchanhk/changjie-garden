@@ -17,7 +17,7 @@ export default function FeedbackAnimation({
   useEffect(() => {
     const timer = setTimeout(() => {
       onComplete();
-    }, 1000);
+    }, 5000);
     
     return () => clearTimeout(timer);
   }, [onComplete]);
