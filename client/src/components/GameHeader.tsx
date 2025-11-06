@@ -1,12 +1,19 @@
-import { Trophy } from "lucide-react";
+import { Trophy, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface GameHeaderProps {
   score: number;
   onPause?: () => void;
+  timeRemaining?: number;
 }
 
-export default function GameHeader({ score, onPause }: GameHeaderProps) {
+export default function GameHeader({ score, onPause, timeRemaining }: GameHeaderProps) {
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
   return (
     <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-20 w-11/12 max-w-md">
       <div className="bg-white/90 dark:bg-card/90 backdrop-blur-sm rounded-lg shadow-lg px-6 py-3 flex items-center justify-between">
@@ -17,16 +24,28 @@ export default function GameHeader({ score, onPause }: GameHeaderProps) {
             <p className="text-3xl font-bold text-primary" data-testid="text-score">{score}</p>
           </div>
         </div>
-        {onPause && (
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={onPause}
-            data-testid="button-pause"
-          >
-            暫停
-          </Button>
-        )}
+        
+        <div className="flex items-center gap-3">
+          {timeRemaining !== undefined && (
+            <div className="flex items-center gap-2">
+              <Clock className="w-6 h-6 text-primary" />
+              <div>
+                <p className="text-xs text-muted-foreground">時間 Time</p>
+                <p className="text-xl font-bold text-primary" data-testid="text-time">{formatTime(timeRemaining)}</p>
+              </div>
+            </div>
+          )}
+          {onPause && (
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={onPause}
+              data-testid="button-pause"
+            >
+              暫停
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );
