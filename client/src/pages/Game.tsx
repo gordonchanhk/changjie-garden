@@ -79,7 +79,7 @@ export default function Game() {
               setFeedbacks(f => [...f, {
                 id: Date.now(),
                 type: 'miss',
-                position: { x: char.position, y: 95 }
+                position: { x: char.position, y: 75 }
               }]);
               return false;
             }
