@@ -95,7 +95,8 @@ export default function Game() {
     if (!inputValue.trim()) return;
 
     const matchedChar = fallingChars.find(
-      char => char.changjieCode.toLowerCase() === inputValue.toLowerCase()
+      char => char.changjieCode.toLowerCase() === inputValue.toLowerCase() || 
+              char.character === inputValue
     );
 
     if (matchedChar) {
