@@ -73,7 +73,7 @@ export default function Game() {
     const fallInterval = setInterval(() => {
       setFallingChars(prev => 
         prev
-          .map(char => ({ ...char, top: char.top + 2 }))
+          .map(char => ({ ...char, top: char.top + 0.4 }))
           .filter(char => {
             if (char.top > 100) {
               setFeedbacks(f => [...f, {
