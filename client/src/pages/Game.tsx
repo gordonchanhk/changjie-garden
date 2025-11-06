@@ -197,7 +197,7 @@ export default function Game() {
     >
       <div className="absolute inset-0 bg-gradient-to-b from-transparent to-green-900/10" />
       
-      <GameHeader score={score} timeRemaining={timeRemaining} />
+      <GameHeader score={score} timeRemaining={timeRemaining} onRestart={handleReset} />
       <GameSettings 
         gameMode={gameMode}
         onGameModeChange={handleGameModeChange}

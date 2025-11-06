@@ -1,13 +1,14 @@
-import { Trophy, Clock } from "lucide-react";
+import { Trophy, Clock, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface GameHeaderProps {
   score: number;
   onPause?: () => void;
+  onRestart?: () => void;
   timeRemaining?: number;
 }
 
-export default function GameHeader({ score, onPause, timeRemaining }: GameHeaderProps) {
+export default function GameHeader({ score, onPause, onRestart, timeRemaining }: GameHeaderProps) {
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -25,7 +26,7 @@ export default function GameHeader({ score, onPause, timeRemaining }: GameHeader
           </div>
         </div>
         
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {timeRemaining !== undefined && (
             <div className="flex items-center gap-2">
               <Clock className="w-6 h-6 text-primary" />
@@ -34,6 +35,16 @@ export default function GameHeader({ score, onPause, timeRemaining }: GameHeader
                 <p className="text-xl font-bold text-primary" data-testid="text-time">{formatTime(timeRemaining)}</p>
               </div>
             </div>
+          )}
+          {onRestart && (
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={onRestart}
+              data-testid="button-restart-header"
+            >
+              <RotateCcw className="w-4 h-4" />
+            </Button>
           )}
           {onPause && (
             <Button 
